@@ -1,48 +1,103 @@
-// Use Case 4: Character Array Based Palindrome Check
+// Use Case 8: Linked List Based Palindrome Checker
 
-public class UseCase4PalindromeCheckerApp {
+public class UseCase8PalindromeCheckerApp {
 
-    // Entry point of the program
+    // Node class representing each element in the linked list
+    static class Node {
+        char data;   // stores character
+        Node next;   // reference to next node
+
+        Node(char data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
+
+    // Entry point of the application
     public static void main(String[] args) {
 
-        // Display application title
-        System.out.println("Palindrome Checker Application - UC4");
+        System.out.println("Palindrome Checker Application - UC8");
 
-        // Declare and initialize the string
-        String word = "radar";
+        // String to check
+        String word = "madam";
 
-        // Convert string to character array
-        char[] characters = word.toCharArray();
+        // Creating linked list from string characters
+        Node head = null;
+        Node tail = null;
 
-        // Initialize two pointers
-        int start = 0;
-        int end = characters.length - 1;
+        for (int i = 0; i < word.length(); i++) {
+            Node newNode = new Node(word.charAt(i));
 
-        // Variable to track palindrome status
-        boolean isPalindrome = true;
-
-        // Two-pointer comparison
-        while (start < end) {
-
-            // Compare characters at start and end
-            if (characters[start] != characters[end]) {
-                isPalindrome = false;
-                break;
+            if (head == null) {
+                head = newNode;
+                tail = newNode;
+            } else {
+                tail.next = newNode;
+                tail = newNode;
             }
-
-            // Move pointers
-            start++;
-            end--;
         }
 
+        // Call method to verify palindrome
+        boolean result = checkPalindrome(head);
+
         // Display result
-        if (isPalindrome) {
+        if (result) {
             System.out.println("The word \"" + word + "\" is a Palindrome.");
         } else {
             System.out.println("The word \"" + word + "\" is NOT a Palindrome.");
         }
 
-        // Indicate program completion
         System.out.println("Program executed successfully.");
+    }
+
+    // Method that checks if linked list represents a palindrome
+    public static boolean checkPalindrome(Node head) {
+
+        // If list has 0 or 1 node it is automatically a palindrome
+        if (head == null || head.next == null) {
+            return true;
+        }
+
+        // Using fast and slow pointers to locate middle
+        Node slow = head;
+        Node fast = head;
+
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        // Reverse second half of list
+        Node secondHalf = reverseList(slow.next);
+
+        Node firstHalf = head;
+
+        // Compare both halves
+        while (secondHalf != null) {
+            if (firstHalf.data != secondHalf.data) {
+                return false;
+            }
+            firstHalf = firstHalf.next;
+            secondHalf = secondHalf.next;
+        }
+
+        return true;
+    }
+
+    // Method to reverse a linked list
+    public static Node reverseList(Node head) {
+
+        Node prev = null;
+        Node current = head;
+        Node next = null;
+
+        while (current != null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        return prev;
     }
 }
